@@ -1,0 +1,27 @@
+{
+    "name": "pappercup/laras",
+    "description": "this is a learn for bridge to laravel and swoole",
+    "type": "library",
+    "authors": [
+        {
+            "name": "pappercup",
+            "email": "282751302@qq.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=7.2.0"
+    },
+    "require-dev": {
+        "laravel/laravel": "5.5.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Pappercup\\Command\\": "src/Command/",
+            "Pappercup\\Config\\": "src/Config/",
+            "Pappercup\\Support\\": "src/Support/",
+            "Pappercup\\Core\\": "src/Core/",
+            "Pappercup\\Http\\": "src/Http/"
+        }
+    }
+}
