@@ -37,4 +37,5 @@
                 "SwooleHttp": "Pappercup\\Support\\SwooleHttpFacade"
             }
         }
+    }
 }
