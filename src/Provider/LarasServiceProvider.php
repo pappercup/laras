@@ -31,7 +31,7 @@ class LarasServiceProvider extends ServiceProvider
 
         // 合并配置文件
         $this->mergeConfigFrom(
-            __DIR__.'../Config/swoole.php', 'swoole'
+            __DIR__.'/../Config/swoole.php', 'swoole'
         );
 
     }
@@ -49,7 +49,7 @@ class LarasServiceProvider extends ServiceProvider
         }
         // 发布配置文件
         $this->publishes([
-            __DIR__.'../Config/swoole.php' => config_path('swoole.php'),
+            __DIR__.'/../Config/swoole.php' => config_path('swoole.php'),
         ]);
 
     }
