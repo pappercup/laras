@@ -11,8 +11,8 @@
 return [
     'http' => [
         'pid_file_path' => storage_path('swoole/http'),
-        'host' => '0.0.0.0',
-        'port' => 7000,
+        'host' => env('SWOOLE_HTTP_HOST', '0.0.0.0'),
+        'port' => env('SWOOLE_HTTP_PORT', 7000),
         'options' => [
             'daemonize' => 1,   // 是否以守护进程方式启动
             'log_file' => storage_path('logs/swoole.log'),
