@@ -11,6 +11,7 @@ class SwooleHttp implements SwooleHttpContract
 {
 
     private $http = null;
+    private $app = null;
 
     public function __construct()
     {
@@ -43,7 +44,7 @@ class SwooleHttp implements SwooleHttpContract
     {
         $this->http->on('WorkerStart', function ($server) {
             require_once base_path().'/vendor/autoload.php';
-            $app = require base_path() . '/bootstrap/app.php';
+            $this->app = require base_path() . '/bootstrap/app.php';
             // 记录pid pid_file
             Configure::storePid($server->master_pid);
         });
