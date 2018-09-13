@@ -47,6 +47,16 @@ class SwooleHttp implements SwooleHttpContract
             $this->app = require base_path() . '/bootstrap/app.php';
             // 记录pid pid_file
             Configure::storePid($server->master_pid);
+
+            // 注册 swoole http server
+            $this->app->singleton(SwooleHttpContract::class, function ($app) use($server) {
+                return $server;
+            });
+            // 绑定别名
+            if (!$this->app->bound('swoole.http')) {
+                $this->app->alias(SwooleHttpContract::class, 'swoole.http');
+            }
+
         });
         return $this;
     }

@@ -20,20 +20,10 @@ class LarasServiceProvider extends ServiceProvider
 
     public function register()
     {
-        // 注册 swoole http server
-        $this->app->singleton(SwooleHttpContract::class, function ($app) {
-            return new SwooleHttp();
-        });
-        // 绑定别名
-        if (!$this->app->bound('swoole.http')) {
-            $this->app->alias(SwooleHttpContract::class, 'swoole.http');
-        }
-
         // 合并配置文件
         $this->mergeConfigFrom(
             __DIR__.'/../Config/swoole.php', 'swoole'
         );
-
     }
 
 
