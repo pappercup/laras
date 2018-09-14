@@ -3,9 +3,9 @@
 namespace Pappercup\Command;
 
 
-use Pappercup\Core\SwooleBridge;
+use Pappercup\Core\CommandBridge;
 
-class SwooleStop extends SwooleBridge
+class SwooleStop extends CommandBridge
 {
     /**
      * The name and signature of the console command.

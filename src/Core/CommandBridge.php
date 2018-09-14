@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Config;
 use Pappercup\Config\Configure;
 use Pappercup\Support\ProcessTrait;
 
-class SwooleBridge extends Command
+class CommandBridge extends Command
 {
     use ProcessTrait;
 

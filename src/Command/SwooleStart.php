@@ -2,14 +2,11 @@
 
 namespace Pappercup\Command;
 
-use Pappercup\Core\SwooleBridge;
+use Pappercup\Core\CommandBridge;
 use Pappercup\Core\SwooleHttp;
-use Pappercup\Http\Request;
 
-class SwooleStart extends SwooleBridge
+class SwooleStart extends CommandBridge
 {
-    protected $app = null;
-    protected $http = null;
 
     /**
      * The name and signature of the console command.

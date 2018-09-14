@@ -2,9 +2,9 @@
 
 namespace Pappercup\Command;
 
-use Pappercup\Core\SwooleBridge;
+use Pappercup\Core\CommandBridge;
 
-class SwooleReload extends SwooleBridge
+class SwooleReload extends CommandBridge
 {
     /**
      * The name and signature of the console command.

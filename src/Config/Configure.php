@@ -6,10 +6,8 @@ use Illuminate\Support\Facades\Config;
 
 class Configure
 {
-
     private static $pid_file = null;
     private static $pid_file_name = 'swoole.pid';
-
 
     public static function config()
     {

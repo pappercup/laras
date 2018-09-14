@@ -12,8 +12,6 @@ use Illuminate\Support\ServiceProvider;
 use Pappercup\Command\SwooleReload;
 use Pappercup\Command\SwooleStart;
 use Pappercup\Command\SwooleStop;
-use Pappercup\Core\SwooleHttp;
-use Pappercup\Core\SwooleHttpContract;
 
 class LarasServiceProvider extends ServiceProvider
 {
