@@ -3,15 +3,19 @@
 namespace Pappercup\Core;
 
 use Illuminate\Support\Facades\Config;
+use Pappercup\Event\HttpEventCallback;
+use Pappercup\Event\HttpEventCallbackContract;
 use \Swoole\Http\Server;
-use Pappercup\Http\Request;
-use Pappercup\Config\Configure;
 
 class SwooleHttp implements SwooleHttpContract
 {
 
     private $http = null;
-    private $app = null;
+    // http 注册的回调事件,  注意 没有 request 事件, 因为 在 想在 request 中实例化 laravel app 并将 swoole http 对象绑定其中
+    private $eventList = [
+        'Start', 'Shutdown', 'WorkerStart', 'WorkerStop', 'WorkerExit', 'Packet', 'Close', 'BufferFull', 'BufferEmpty',
+        'Task', 'Finish', 'PipeMessage', 'WorkerError', 'ManagerStart', 'ManagerStop',
+    ];
 
     public function __construct()
     {
@@ -24,6 +28,12 @@ class SwooleHttp implements SwooleHttpContract
             $config = Config::get('swoole.http');
             $this->http = new Server($config['host'], $config['port']);
             $this->http->set($config['options']);
+            // 注册 事件回调
+            if ( isset($config['event_callback']) && app($config['event_callback']) instanceof HttpEventCallbackContract) {
+                $this->bindHttpEventCallback($config['event_callback']);
+            }else {
+                $this->bindDefaultHttpEventCallback();
+            }
         }
     }
 
@@ -31,6 +41,32 @@ class SwooleHttp implements SwooleHttpContract
     {
         return $this->http;
     }
+
+    /**
+     * 绑定回调事件
+     *
+     * @param string $httpEventCallback
+     * @author pappercup
+     * @date 2018/9/18 15:00
+     */
+    public function bindHttpEventCallback(string $httpEventCallback)
+    {
+        foreach ($this->eventList as $callback) {
+            $this->http->on($callback, [ $httpEventCallback, $callback ]);
+        }
+    }
+
+    /**
+     * 绑定默认的事件回调
+     *
+     * @author pappercup
+     * @date 2018/9/18 15:07
+     */
+    public function bindDefaultHttpEventCallback()
+    {
+        $this->bindHttpEventCallback(HttpEventCallback::class);
+    }
+
 
     /**
      * 绑定两个特殊的监听事件
@@ -41,111 +77,23 @@ class SwooleHttp implements SwooleHttpContract
      */
     public function start()
     {
-        $this->onWorkerStart()->onRequest();
-        return $this->http->start();
+        return $this->onRequest()->http->start();
     }
 
     /**
-     * request 监听事件
+     * 监听特殊的方法
      *
-     * @return $this
      * @author pappercup
-     * @date 2018/9/13 17:52
+     * @date 2018/9/18 15:38
      */
     public function onRequest()
     {
-        $server = $this->http;
-        $this->http->on('request', function ($request, $response) use($server) {
-            $this->bootLaravel($request, $response, $server);
+        $this->http->on('Request', function (\Swoole\Http\Request $request, \Swoole\Http\Response $response) {
+            (new HttpBridge($this->http))->bootstrapLaravel($request, $response);
         });
         return $this;
     }
 
-    /**
-     * worker start 监听事件
-     *
-     * @return $this
-     * @author pappercup
-     * @date 2018/9/13 17:52
-     */
-    public function onWorkerStart()
-    {
-        $this->http->on('WorkerStart', function ($server) {
-            // 记录pid pid_file
-            Configure::storePid($server->master_pid);
-        });
-        return $this;
-    }
-
-    /**
-     * 将 swoole http 绑定到 laravel 容器中
-     *
-     * @param $app
-     * @param $swooleHttp
-     * @author pappercup
-     * @date 2018/9/13 18:08
-     */
-    private function bindSwooleHttp($app, $swooleHttp)
-    {
-        // 注册 swoole http server
-        $app->singleton(SwooleHttpContract::class, function ($app) use($swooleHttp) {
-            return $swooleHttp;
-        });
-        // 绑定别名
-        if (!$app->bound('swoole.http')) {
-            $app->alias(SwooleHttpContract::class, 'swoole.http');
-        }
-    }
-
-    /**
-     * 启动 laravel
-     *
-     * @param $swooleRequest
-     * @param $swooleResponse
-     * @author pappercup
-     * @date 2018/9/13 18:09
-     */
-    protected function bootLaravel($swooleRequest, $swooleResponse, $server)
-    {
-        // create laravel app
-        $this->app = require base_path() . '/bootstrap/app.php';
-        // bind swoole http server
-        $this->bindSwooleHttp($this->app, $server);
-        // now  is  index.php
-        $kernel = $this->app->make(\Illuminate\Contracts\Http\Kernel::class);
-
-        $response = $kernel->handle(
-            $request = Request::captureSwooleRequest($swooleRequest)
-        );
-        $content = $response->getContent();
-        $kernel->terminate($request, $response);
-
-        $this->responseMapper($response, $swooleResponse)->end($content);
-    }
-
-    /**
-     * laravel-response map to swoole-response
-     *
-     * @param $response
-     * @param $swooleResponse
-     * @return mixed
-     * @author pappercup
-     * @date 2018/9/13 18:09
-     */
-    public function responseMapper($response, $swooleResponse)
-    {
-
-        foreach ($response->headers as $key => $value) {
-            $swooleResponse->header($key, $value[0]);
-        }
-
-        $swooleResponse->status($response->getStatusCode());
-
-        foreach ($response->headers->getCookies() as $cookie) {
-            $swooleResponse->cookie($cookie->getName(), $cookie->getValue(), $cookie->getExpiresTime(), $cookie->getPath(), $cookie->getDomain(), $cookie->isSecure(), $cookie->isHttpOnly());
-        }
-        return $swooleResponse;
-    }
 
 
 }

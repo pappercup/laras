@@ -7,7 +7,6 @@
  * Time: 17:10
  */
 
-
 return [
     'http' => [
         'pid_file_path' => storage_path('swoole/http'),
@@ -30,7 +29,9 @@ return [
             'reactor_num' => 2, // 通过此参数来调节poll线程的数量，以充分利用多核, cpu 核数
 
             'max_conn' => 10000,    // 设置Server最大允许维持多少个tcp连接, 超过此数量后，新进入的连接将被拒绝
-
         ],
+//        'event_callback' => Pappercup\Event\HttpEventCallback::class,   // default http core callback
+        'event_callback' => null,   // 事件回调 类必须实现 Pappercup\Event\HttpEventCallbackContract;
+
     ],
 ];
