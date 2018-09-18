@@ -11,6 +11,9 @@ class SwooleHttp implements SwooleHttpContract
 {
 
     private $http = null;
+    private $config = [];
+    private $memory = [];
+
     // http 注册的回调事件,  注意 没有 request 事件, 因为 在 想在 request 中实例化 laravel app 并将 swoole http 对象绑定其中
     private $eventList = [
         'Start', 'Shutdown', 'WorkerStart', 'WorkerStop', 'WorkerExit', 'Packet', 'Close', 'BufferFull', 'BufferEmpty',
@@ -19,18 +22,19 @@ class SwooleHttp implements SwooleHttpContract
 
     public function __construct()
     {
+        $this->config = Config::get('swoole.http');
+        $this->createSwooleMemory();
         $this->initHttp();
     }
 
-    public function initHttp()
+    private function initHttp()
     {
         if ( !($this->http instanceof Server) ) {
-            $config = Config::get('swoole.http');
-            $this->http = new Server($config['host'], $config['port']);
-            $this->http->set($config['options']);
+            $this->http = new Server($this->config['host'], $this->config['port']);
+            $this->http->set($this->config['options']);
             // 注册 事件回调
-            if ( isset($config['event_callback']) && app($config['event_callback']) instanceof HttpEventCallbackContract) {
-                $this->bindHttpEventCallback($config['event_callback']);
+            if ( isset($this->config['event_callback']) && app($this->config['event_callback']) instanceof HttpEventCallbackContract) {
+                $this->bindHttpEventCallback($this->config['event_callback']);
             }else {
                 $this->bindDefaultHttpEventCallback();
             }
@@ -42,6 +46,11 @@ class SwooleHttp implements SwooleHttpContract
         return $this->http;
     }
 
+    private function createSwooleMemory()
+    {
+        !isset($this->config['memory']) ?: $this->memory = MemoryBridge::createSwooleMemory($this->config['memory']);
+    }
+
     /**
      * 绑定回调事件
      *
@@ -49,7 +58,7 @@ class SwooleHttp implements SwooleHttpContract
      * @author pappercup
      * @date 2018/9/18 15:00
      */
-    public function bindHttpEventCallback(string $httpEventCallback)
+    private function bindHttpEventCallback(string $httpEventCallback)
     {
         foreach ($this->eventList as $callback) {
             $this->http->on($callback, [ $httpEventCallback, $callback ]);
@@ -62,7 +71,7 @@ class SwooleHttp implements SwooleHttpContract
      * @author pappercup
      * @date 2018/9/18 15:07
      */
-    public function bindDefaultHttpEventCallback()
+    private function bindDefaultHttpEventCallback()
     {
         $this->bindHttpEventCallback(HttpEventCallback::class);
     }
@@ -86,10 +95,10 @@ class SwooleHttp implements SwooleHttpContract
      * @author pappercup
      * @date 2018/9/18 15:38
      */
-    public function onRequest()
+    private function onRequest()
     {
         $this->http->on('Request', function (\Swoole\Http\Request $request, \Swoole\Http\Response $response) {
-            (new HttpBridge($this->http))->bootstrapLaravel($request, $response);
+            (new HttpBridge($this->http, $this->memory))->bootstrapLaravel($request, $response);
         });
         return $this;
     }

@@ -1,6 +1,7 @@
 <?php
 /**
  * referer https://wiki.swoole.com/wiki/page/13.html
+ * 参考官网配置 https://wiki.swoole.com/wiki/page/274.html
  *
  * User: pappercup
  * Date: 2018/9/7
@@ -29,9 +30,30 @@ return [
             'reactor_num' => 2, // 通过此参数来调节poll线程的数量，以充分利用多核, cpu 核数
 
             'max_conn' => 10000,    // 设置Server最大允许维持多少个tcp连接, 超过此数量后，新进入的连接将被拒绝
+
+//            'upload_tmp_dir' => '/data/uploadfiles/',   // 上传文件临时目录
+//            'http_parse_post' => false,     // https://wiki.swoole.com/wiki/page/p-http_parse_post.html
+//            'http_compression' => true,
+//
+//            // https://wiki.swoole.com/wiki/page/783.html
+//            'document_root' => '/data/webroot/example.com',
+//            'enable_static_handler' => true,
         ],
 //        'event_callback' => Pappercup\Event\HttpEventCallback::class,   // default http core callback
         'event_callback' => null,   // 事件回调 类必须实现 Pappercup\Event\HttpEventCallbackContract;
 
+        /**
+         * This may cause memory leaks.
+         */
+        'memory' => [
+            'table' => false,
+//            'table' => [
+//                'size' => 1024,
+//                'conflict_proportion' => 0.2,
+//            ],
+            'atomic' => [
+                'init_value' => 0,
+            ],
+        ],
     ],
 ];

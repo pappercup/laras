@@ -19,11 +19,13 @@ class HttpBridge
 
     private $app = null;
     private $server = null;
+    private $memory = null;
     private $extraEventCallback = null;
 
-    public function __construct(Server $server)
+    public function __construct(Server $server, array $memory)
     {
         $this->server = $server;
+        $this->memory = $memory;
         $this->extraEventCallback = $this->createApplication()->findExtraEventCallback();
     }
 
@@ -39,7 +41,8 @@ class HttpBridge
         // create laravel app
         $this->app = require base_path() . '/bootstrap/app.php';
         // bind swoole http server
-        $this->bindSwooleHttp($this->server);
+        $this->bindSwooleHttp();
+        $this->bindSwooleMemory();
         return $this;
     }
 
@@ -91,15 +94,30 @@ class HttpBridge
     }
 
     /**
-     * @param $swooleHttp
+     * @author pappercup
+     * @date 2018/9/18 17:32
+     */
+    private function bindSwooleMemory()
+    {
+        // 注册 swoole http server
+        $this->app->singleton(SwooleMemoryContract::class, function ($app) {
+            return $this->memory;
+        });
+        // 绑定别名
+        if (!$this->app->bound('swoole.memory')) {
+            $this->app->alias(SwooleMemoryContract::class, 'swoole.memory');
+        }
+    }
+
+    /**
      * @author pappercup
      * @date 2018/9/18 15:19
      */
-    private function bindSwooleHttp($swooleHttp)
+    private function bindSwooleHttp()
     {
         // 注册 swoole http server
-        $this->app->singleton(SwooleHttpContract::class, function ($app) use($swooleHttp) {
-            return $swooleHttp;
+        $this->app->singleton(SwooleHttpContract::class, function ($app) {
+            return $this->server;
         });
         // 绑定别名
         if (!$this->app->bound('swoole.http')) {
