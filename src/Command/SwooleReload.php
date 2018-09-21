@@ -37,7 +37,9 @@ class SwooleReload extends CommandBridge
      */
     public function handle()
     {
-        $this->reload();
+        if($this->check()){
+            $this->reload();
+        }
     }
 
 

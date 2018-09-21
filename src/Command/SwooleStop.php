@@ -38,7 +38,9 @@ class SwooleStop extends CommandBridge
      */
     public function handle()
     {
-        $this->stop();
+        if($this->check()){
+            $this->stop();
+        }
     }
 
 
