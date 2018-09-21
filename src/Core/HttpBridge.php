@@ -73,7 +73,7 @@ class HttpBridge
     public function bootstrapLaravel($swooleRequest, $swooleResponse)
     {
         //  custom event callback
-        $this->extraEventCallback::beforeBootstrapLaravel($this->app);
+        $this->extraEventCallback::beforeRunLaravel($this->app);
 
         //index.php
         $kernel = $this->app->make(\Illuminate\Contracts\Http\Kernel::class);
@@ -87,7 +87,7 @@ class HttpBridge
         $swooleResponse = $this->responseMapper($response, $swooleResponse);
 
         //  custom event callback
-        $this->extraEventCallback::beforeBootstrapLaravel($this->app, $swooleResponse, $content);
+        $this->extraEventCallback::afterRunLaravel($this->app, $swooleResponse, $content);
 
         $swooleResponse->end($content);
 

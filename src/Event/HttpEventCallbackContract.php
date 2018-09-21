@@ -19,7 +19,7 @@ interface HttpEventCallbackContract extends EventCallbackContract {
      * @author pappercup
      * @date 2018/9/18 15:44
      */
-    public static function beforeBootstrapLaravel(Application $application);
+    public static function beforeRunLaravel(Application $application);
 
     /**
      * @param Application $application
@@ -29,7 +29,7 @@ interface HttpEventCallbackContract extends EventCallbackContract {
      * @author pappercup
      * @date 2018/9/18 15:44
      */
-    public static function afterBootstrapLaravel(Application $application, \Swoole\Http\Response $swooleResponse, string $content);
+    public static function afterRunLaravel(Application $application, \Swoole\Http\Response $swooleResponse, string $content);
 
 }
 

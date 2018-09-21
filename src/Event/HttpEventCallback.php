@@ -235,9 +235,10 @@ class HttpEventCallback implements HttpEventCallbackContract
      * @author pappercup
      * @date 2018/9/18 15:44
      */
-    public static function beforeBootstrapLaravel(Application $application)
+    public static function beforeRunLaravel(Application $application)
     {
-        // TODO: Implement beforeBootstrapLaravel() method.
+        // TODO: Implement beforeRunLaravel() method.
+        dump('before run laravel');
     }
 
     /**
@@ -248,9 +249,10 @@ class HttpEventCallback implements HttpEventCallbackContract
      * @author pappercup
      * @date 2018/9/18 15:44
      */
-    public static function afterBootstrapLaravel(Application $application, \Swoole\Http\Response $swooleResponse, string $content)
+    public static function afterRunLaravel(Application $application, \Swoole\Http\Response $swooleResponse, string $content)
     {
-        // TODO: Implement afterBootstrapLaravel() method.
+        // TODO: Implement afterRunLaravel() method.
+        dump('after run laravel');
     }
 
 
