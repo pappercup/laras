@@ -24,7 +24,6 @@ class SwooleHttp implements SwooleHttpContract
     {
         $this->config = Config::get('swoole.http');
         $this->createSwooleMemory();
-        $this->initHttp();
     }
 
     private function initHttp()
@@ -39,6 +38,7 @@ class SwooleHttp implements SwooleHttpContract
                 $this->bindDefaultHttpEventCallback();
             }
         }
+        return $this;
     }
 
     public function getHttp()
@@ -86,7 +86,7 @@ class SwooleHttp implements SwooleHttpContract
      */
     public function start()
     {
-        return $this->onRequest()->http->start();
+        return $this->initHttp()->onRequest()->getHttp()->start();
     }
 
     /**

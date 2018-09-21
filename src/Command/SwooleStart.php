@@ -39,7 +39,9 @@ class SwooleStart extends CommandBridge
      */
     public function handle()
     {
-        (app(SwooleHttp::class))->start();
+        if($this->check()){
+            (app(SwooleHttp::class))->start();
+        }
     }
 
 }
