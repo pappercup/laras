@@ -15,6 +15,12 @@ class CommandBridge extends Command
     public function __construct()
     {
         parent::__construct();
+
+        if (!Configure::config()) {
+            $this->print('configure failure', 'error');
+            exit();
+        }
+
     }
 
     public function check()
@@ -27,14 +33,8 @@ class CommandBridge extends Command
                     $this->print('    ' . $key . ' ===> ' . $value, 'error');
                 }
             }
-            return false;
+            exit();
         }
-
-        if (!Configure::config()) {
-            $this->print('configure failure', 'error');
-            return false;
-        }
-        return true;
     }
 
     public function print($message, $option = 'info')
