@@ -7,6 +7,7 @@ just for learn
 
     * php >= 7.2.0
     * laravel = 5.5.*
+    * swoole >= 4.0.4
 
 * 安装
 
@@ -22,8 +23,11 @@ php artisan vendor:publish
 * 使用 
 
 ```bash
-// start stop reload restart
+// http: start stop reload restart
 php artisan swoole:http start
+
+// websocket
+php artisan swoole:webSocket start
 ```
 *  TODO:
     
