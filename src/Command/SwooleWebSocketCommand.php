@@ -3,9 +3,9 @@
 namespace Pappercup\Command;
 
 use Pappercup\Core\CommandBridge;
-use Pappercup\Core\SwooleHttp;
+use Pappercup\Core\SwooleWebSocket;
 
-class SwooleHttpCommand extends CommandBridge
+class SwooleWebSocketCommand extends CommandBridge
 {
 
     /**
@@ -13,14 +13,14 @@ class SwooleHttpCommand extends CommandBridge
      *
      * @var string
      */
-    protected $signature = 'swoole:http {action : start|stop|reload|restart}';
+    protected $signature = 'swoole:webSocket {action : start|stop|reload|restart}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'bridge swoole and laravel; swoole:http start|stop|reload|restart tips: default is start: ex: swoole:http start: swoole:http stop: swoole:http;';
+    protected $description = 'bridge swoole and laravel; swoole:webSocket start|stop|reload|restart tips: default is start: ex: swoole:webSocket start: swoole:webSocket stop: swoole:webSocket;';
 
     protected $actions = [ 'start', 'stop', 'reload', 'restart' ];
 
@@ -31,7 +31,7 @@ class SwooleHttpCommand extends CommandBridge
      */
     public function __construct()
     {
-        $this->server_type = 'http';
+        $this->server_type = 'webSocket';
         parent::__construct();
     }
 
@@ -66,7 +66,7 @@ class SwooleHttpCommand extends CommandBridge
 
     protected function start()
     {
-        (app(SwooleHttp::class))->start();
+        (app(SwooleWebSocket::class))->start();
     }
 
     protected function stop()

@@ -12,11 +12,12 @@ class CommandBridge extends Command
 {
     use ProcessTrait;
 
+    protected $server_type = null;
+
     public function __construct()
     {
         parent::__construct();
-
-        if (!Configure::config()) {
+        if (!Configure::config($this->server_type)) {
             $this->print('configure failure', 'error');
             exit();
         }
@@ -39,7 +40,7 @@ class CommandBridge extends Command
 
     public function print($message, $option = 'info')
     {
-        if ((int)Config::get('swoole.http.options.daemonize') <= 0) {
+        if ((int)Config::get('swoole.' . $this->server_type . '.options.daemonize') <= 0) {
             $this->$option($message);
         }
     }

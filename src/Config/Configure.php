@@ -9,17 +9,17 @@ class Configure
     private static $pid_file = null;
     private static $pid_file_name = 'swoole.pid';
 
-    public static function config()
+    public static function config($server_type)
     {
         $res = true;
 
-        $pid_file = rtrim(Config::get('swoole.http.pid_file_path'), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . self::$pid_file_name;
+        $pid_file = rtrim(Config::get('swoole.' . $server_type . '.pid_file_path'), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . self::$pid_file_name;
         self::$pid_file = $pid_file;
         if (!file_exists($pid_file)) {
             $res = self::createPidFile($pid_file);
         }
 
-        $log_file = Config::get('swoole.http.options.log_file');
+        $log_file = Config::get('swoole.' . $server_type . '.options.log_file');
         if (!file_exists($log_file)) {
             $res = self::createLogFile($log_file);
         }

@@ -9,12 +9,8 @@
 namespace Pappercup\Provider;
 
 use Illuminate\Support\ServiceProvider;
-use Pappercup\Command\SwooleHttp;
 use Pappercup\Command\SwooleHttpCommand;
-use Pappercup\Command\SwooleReload;
-use Pappercup\Command\SwooleRestart;
-use Pappercup\Command\SwooleStart;
-use Pappercup\Command\SwooleStop;
+use Pappercup\Command\SwooleWebSocketCommand;
 
 class LarasServiceProvider extends ServiceProvider
 {
@@ -34,6 +30,7 @@ class LarasServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 SwooleHttpCommand::class,
+                SwooleWebSocketCommand::class,
             ]);
         }
         // 发布配置文件

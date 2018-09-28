@@ -20,7 +20,7 @@ interface WebSocketEventCallbackContract extends HttpEventCallbackContract {
      * @author pappercup
      * @date 2018/9/18 13:54
      */
-    public static function HandShake(\Swoole\Http\Request $request, \Swoole\Http\Response $response);
+//    public static function HandShake(\Swoole\Http\Request $request, \Swoole\Http\Response $response);
 
     /**
      * https://wiki.swoole.com/wiki/page/401.html
