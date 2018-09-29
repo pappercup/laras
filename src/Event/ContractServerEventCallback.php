@@ -10,7 +10,7 @@ namespace Pappercup\Event;
 
 use \Swoole\Server;
 
-interface ServerEventCallbackContract extends EventCallbackContract {
+interface ContractServerEventCallback extends ContractEventCallback {
 
     /**
      * https://wiki.swoole.com/wiki/page/49.html

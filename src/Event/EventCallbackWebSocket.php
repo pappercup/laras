@@ -6,7 +6,7 @@ use Illuminate\Foundation\Application;
 use Pappercup\Config\Configure;
 use Swoole\Server;
 
-class WebSocketEventCallback implements WebSocketEventCallbackContract
+class EventCallbackWebSocket implements ContractWebSocketEventCallback
 {
     /**
      * https://wiki.swoole.com/wiki/page/p-event/onStart.html

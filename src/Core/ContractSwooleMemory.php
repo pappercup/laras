@@ -9,7 +9,7 @@
 namespace Pappercup\Core;
 
 
-interface SwooleHttpContract
+interface ContractSwooleMemory
 {
 
 }

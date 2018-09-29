@@ -2,11 +2,14 @@
 
 namespace Pappercup\Command;
 
-use Pappercup\Core\CommandBridge;
-use Pappercup\Core\SwooleHttp;
+use Illuminate\Console\Command;
+use Pappercup\Support\ServerCommandTrait;
 
-class SwooleHttpCommand extends CommandBridge
+class SwooleHttpCommand extends Command
 {
+    use ServerCommandTrait;
+
+    protected $server_type = 'http';
 
     /**
      * The name and signature of the console command.
@@ -20,20 +23,10 @@ class SwooleHttpCommand extends CommandBridge
      *
      * @var string
      */
-    protected $description = 'bridge swoole and laravel; swoole:http start|stop|reload|restart tips: default is start: ex: swoole:http start: swoole:http stop: swoole:http;';
-
-    protected $actions = [ 'start', 'stop', 'reload', 'restart' ];
-
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->server_type = 'http';
-        parent::__construct();
-    }
+    protected $description = 'bridge swoole and laravel; 
+                        swoole:http start|stop|reload|restart; 
+                        tips: default is start; 
+                        ex: swoole:http start: swoole:http stop: swoole:http;';
 
     /**
      * Execute the console command.
@@ -44,89 +37,6 @@ class SwooleHttpCommand extends CommandBridge
     {
         $this->check();
         $this->act();
-    }
-
-    protected function analysisArgument()
-    {
-        $action = $this->argument('action');
-        if (empty($action)) {
-            $action = 'start';
-        }elseif (!in_array($action, $this->actions)) {
-            $this->error('invalid action argument, must start|stop|reload|restart');
-            exit();
-        }
-        return $action;
-    }
-
-    protected function act()
-    {
-        $action = $this->analysisArgument();
-        $this->$action();
-    }
-
-    protected function start()
-    {
-        (app(SwooleHttp::class))->start();
-    }
-
-    protected function stop()
-    {
-        $pid = $this->getPid();
-        if ((int)$pid > 0) {
-            $this->killProcss($pid, SIGTERM);
-            $res = $this->checkProcessRunning($pid, 15);
-            if ($res) {
-                $this->deletePidFile();
-                $this->info('stopped...');
-            }else {
-                $this->error('error: can not stop swoole!!!');
-            }
-        }else{
-            $this->info('swoole server is not running!');
-        }
-    }
-
-    protected function reload()
-    {
-        $pid = $this->getPid();
-        if ((int)$pid > 0) {
-            $this->killProcss($pid, SIGUSR1);
-            $this->info('reload...');
-        }else{
-            $this->info('swoole server is not running!');
-        }
-    }
-
-    protected function restart()
-    {
-        $pid = $this->getPid();
-        if ((int)$pid > 0) {
-            $this->killProcss($pid, SIGTERM);
-            $res = $this->checkProcessRunning($pid, 15);
-            if ($res) {
-                $this->deletePidFile();
-                $this->info('restarted...');
-                $this->start();
-            }else {
-                $this->error('failed...');
-            }
-        }else {
-            $this->info('restarted...');
-            $this->start();
-        }
-    }
-
-    private function checkProcessRunning($pid, $delay) {
-        $start_time = time();
-        while (time() - $start_time < $delay) {
-            if (!$this->isProcessRunning($pid)) {
-                return true;
-            }
-            $this->info('check process running status: process still running...');
-            sleep(1);
-        }
-        $this->error('waiting swoole stop timeout...');
-        return false;
     }
 
 }

@@ -1,13 +1,17 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: pappercup
+ * Date: 2018/9/18
+ * Time: 13:23
+ */
 
 namespace Pappercup\Event;
 
-use Illuminate\Foundation\Application;
-use Pappercup\Config\Configure;
-use Swoole\Server;
+use \Swoole\Server;
 
-class HttpEventCallback implements HttpEventCallbackContract
-{
+interface ContractEventCallback {
+
     /**
      * https://wiki.swoole.com/wiki/page/p-event/onStart.html
      *
@@ -18,10 +22,7 @@ class HttpEventCallback implements HttpEventCallbackContract
      * @author pappercup
      * @date 2018/9/18 13:28
      */
-    public static function Start(Server $server)
-    {
-        Configure::storePid($server->master_pid);
-    }
+    public static function Start(Server $server);
 
     /**
      * https://wiki.swoole.com/wiki/page/p-event/onShutdown.html
@@ -31,10 +32,7 @@ class HttpEventCallback implements HttpEventCallbackContract
      * @author pappercup
      * @date 2018/9/18 13:31
      */
-    public static function Shutdown(Server $server)
-    {
-        // TODO: Implement Shutdown() method.
-    }
+    public static function Shutdown(Server $server);
 
     /**
      * https://wiki.swoole.com/wiki/page/p-event/onWorkerStart.html
@@ -47,10 +45,7 @@ class HttpEventCallback implements HttpEventCallbackContract
      * @author pappercup
      * @date 2018/9/12 13:57
      */
-    public static function WorkerStart(Server $server, int $worker_id)
-    {
-        // TODO: Implement WorkerStart() method.
-    }
+    public static function WorkerStart(Server $server, int $worker_id);
 
     /**
      * https://wiki.swoole.com/wiki/page/p-event/onWorkerStop.html
@@ -61,10 +56,7 @@ class HttpEventCallback implements HttpEventCallbackContract
      * @author pappercup
      * @date 2018/9/18 13:34
      */
-    public static function WorkerStop(Server $server, int $worker_id)
-    {
-        // TODO: Implement WorkerStop() method.
-    }
+    public static function WorkerStop(Server $server, int $worker_id);
 
     /**
      * https://wiki.swoole.com/wiki/page/808.html
@@ -77,10 +69,7 @@ class HttpEventCallback implements HttpEventCallbackContract
      * @author pappercup
      * @date 2018/9/18 13:35
      */
-    public static function WorkerExit(Server $server, int $worker_id)
-    {
-        // TODO: Implement WorkerExit() method.
-    }
+    public static function WorkerExit(Server $server, int $worker_id);
 
     /**
      * https://wiki.swoole.com/wiki/page/450.html
@@ -92,10 +81,7 @@ class HttpEventCallback implements HttpEventCallbackContract
      * @author pappercup
      * @date 2018/9/18 13:38
      */
-    public static function Packet(Server $server, string $data, array $client_info)
-    {
-        // TODO: Implement Packet() method.
-    }
+    public static function Packet(Server $server, string $data, array $client_info);
 
     /**
      * https://wiki.swoole.com/wiki/page/p-event/onClose.html
@@ -107,10 +93,7 @@ class HttpEventCallback implements HttpEventCallbackContract
      * @author pappercup
      * @date 2018/9/18 13:40
      */
-    public static function Close(Server $server, int $fd, int $reactorId)
-    {
-        // TODO: Implement Close() method.
-    }
+    public static function Close(Server $server, int $fd, int $reactorId);
 
     /**
      * https://wiki.swoole.com/wiki/page/745.html
@@ -121,10 +104,7 @@ class HttpEventCallback implements HttpEventCallbackContract
      * @author pappercup
      * @date 2018/9/18 13:41
      */
-    public static function BufferFull(Server $server, int $fd)
-    {
-        // TODO: Implement BufferFull() method.
-    }
+    public static function BufferFull(Server $server, int $fd);
 
     /**
      * https://wiki.swoole.com/wiki/page/746.html
@@ -135,10 +115,7 @@ class HttpEventCallback implements HttpEventCallbackContract
      * @author pappercup
      * @date 2018/9/18 13:41
      */
-    public static function BufferEmpty(Server $server, int $fd)
-    {
-        // TODO: Implement BufferEmpty() method.
-    }
+    public static function BufferEmpty(Server $server, int $fd);
 
     /**
      * https://wiki.swoole.com/wiki/page/54.html
@@ -151,10 +128,7 @@ class HttpEventCallback implements HttpEventCallbackContract
      * @author pappercup
      * @date 2018/9/18 13:44
      */
-    public static function Task(Server $server, int $task_id, int $src_worker_id, $data)
-    {
-        // TODO: Implement Task() method.
-    }
+    public static function Task(Server $server, int $task_id, int $src_worker_id, $data);
 
     /**
      * https://wiki.swoole.com/wiki/page/136.html
@@ -166,10 +140,7 @@ class HttpEventCallback implements HttpEventCallbackContract
      * @author pappercup
      * @date 2018/9/18 13:44
      */
-    public static function Finish(Server $server, int $task_id, string $data)
-    {
-        // TODO: Implement Finish() method.
-    }
+    public static function Finish(Server $server, int $task_id, string $data);
 
     /**
      * https://wiki.swoole.com/wiki/page/366.html
@@ -181,10 +152,7 @@ class HttpEventCallback implements HttpEventCallbackContract
      * @author pappercup
      * @date 2018/9/18 13:45
      */
-    public static function PipeMessage(Server $server, int $src_worker_id, $message)
-    {
-        // TODO: Implement PipeMessage() method.
-    }
+    public static function PipeMessage(Server $server, int $src_worker_id, $message);
 
     /**
      * https://wiki.swoole.com/wiki/page/166.html
@@ -198,10 +166,7 @@ class HttpEventCallback implements HttpEventCallbackContract
      * @author pappercup
      * @date 2018/9/18 13:46
      */
-    public static function WorkerError(Server $server, int $worker_id, int $worker_pid, int $exit_code, int $signal)
-    {
-        // TODO: Implement WorkerError() method.
-    }
+    public static function WorkerError(Server $server, int $worker_id, int $worker_pid, int $exit_code, int $signal);
 
     /**
      * https://wiki.swoole.com/wiki/page/190.html
@@ -211,10 +176,7 @@ class HttpEventCallback implements HttpEventCallbackContract
      * @author pappercup
      * @date 2018/9/18 13:47
      */
-    public static function ManagerStart(Server $server)
-    {
-        // TODO: Implement ManagerStart() method.
-    }
+    public static function ManagerStart(Server $server);
 
     /**
      * https://wiki.swoole.com/wiki/page/191.html
@@ -224,36 +186,7 @@ class HttpEventCallback implements HttpEventCallbackContract
      * @author pappercup
      * @date 2018/9/18 13:47
      */
-    public static function ManagerStop(Server $server)
-    {
-        // TODO: Implement ManagerStop() method.
-    }
-
-    /**
-     * @param Application $application
-     * @return mixed
-     * @author pappercup
-     * @date 2018/9/18 15:44
-     */
-    public static function beforeRunLaravel(Application $application)
-    {
-        // TODO: Implement beforeRunLaravel() method.
-        dump('before run laravel');
-    }
-
-    /**
-     * @param Application $application
-     * @param \Swoole\Http\Response $swooleResponse
-     * @param string $content
-     * @return mixed
-     * @author pappercup
-     * @date 2018/9/18 15:44
-     */
-    public static function afterRunLaravel(Application $application, \Swoole\Http\Response $swooleResponse, string $content)
-    {
-        // TODO: Implement afterRunLaravel() method.
-        dump('after run laravel');
-    }
-
+    public static function ManagerStop(Server $server);
 
 }
+

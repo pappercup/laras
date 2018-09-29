@@ -2,17 +2,19 @@
 
 namespace Pappercup\Core;
 
-use Illuminate\Support\Facades\Config;
-use Pappercup\Event\WebSocketEventCallback;
-use Pappercup\Event\WebSocketEventCallbackContract;
 use \Swoole\WebSocket\Server;
+use Illuminate\Support\Facades\Config;
+use Pappercup\Event\EventCallbackWebSocket;
+use Pappercup\Event\ContractWebSocketEventCallback;
 
-class SwooleWebSocket  implements SwooleWebSocketContract
+class SwooleWebSocket  implements ContractSwooleWebSocket
 {
 
     private $webSocket = null;
+    private $bridge = null;
     private $config = [];
     private $memory = [];
+    protected $server_type = 'websocket';
 
     // http 注册的回调事件,  注意 没有 request 事件, 因为 在 想在 request 中实例化 laravel app 并将 swoole http 对象绑定其中
     private $eventList = [
@@ -22,7 +24,7 @@ class SwooleWebSocket  implements SwooleWebSocketContract
 
     public function __construct()
     {
-        $this->config = Config::get('swoole.webSocket');
+        $this->config = Config::get('swoole.' . $this->server_type);
         $this->createSwooleMemory();
     }
 
@@ -32,12 +34,13 @@ class SwooleWebSocket  implements SwooleWebSocketContract
             $this->webSocket = new Server($this->config['host'], $this->config['port']);
             $this->webSocket->set($this->config['options']);
             // 注册 事件回调
-            if ( isset($this->config['event_callback']) && app($this->config['event_callback']) instanceof WebSocketEventCallbackContract) {
+            if ( isset($this->config['event_callback']) && app($this->config['event_callback']) instanceof ContractWebSocketEventCallback) {
                 $this->bindWebSocketEventCallback($this->config['event_callback']);
             }else {
                 $this->bindDefaultWebSocketEventCallback();
             }
         }
+        $this->bridge = new BridgeWebSocket($this->webSocket, $this->memory);
         return $this;
     }
 
@@ -48,7 +51,7 @@ class SwooleWebSocket  implements SwooleWebSocketContract
 
     private function createSwooleMemory()
     {
-        !isset($this->config['memory']) ?: $this->memory = MemoryBridge::createSwooleMemory($this->config['memory']);
+        !isset($this->config['memory']) ?: $this->memory = BridgeMemory::createSwooleMemory($this->config['memory']);
     }
 
     /**
@@ -76,7 +79,7 @@ class SwooleWebSocket  implements SwooleWebSocketContract
      */
     private function bindDefaultWebSocketEventCallback()
     {
-        $this->bindWebSocketEventCallback(WebSocketEventCallback::class);
+        $this->bindWebSocketEventCallback(EventCallbackWebSocket::class);
     }
 
 
@@ -101,7 +104,7 @@ class SwooleWebSocket  implements SwooleWebSocketContract
     private function onRequest()
     {
         $this->webSocket->on('Request', function (\Swoole\Http\Request $request, \Swoole\Http\Response $response) {
-            (new WebSocketBridge($this->webSocket, $this->memory))->bootstrapLaravel($request, $response);
+            $this->bridge->bootstrapLaravel($request, $response);
         });
         return $this;
     }

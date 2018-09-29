@@ -9,7 +9,7 @@
 namespace Pappercup\Core;
 
 
-interface SwooleWebSocketContract
+interface ContractSwooleWebSocket
 {
 
 }

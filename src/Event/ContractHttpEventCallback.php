@@ -11,7 +11,7 @@ namespace Pappercup\Event;
 
 use Illuminate\Foundation\Application;
 
-interface HttpEventCallbackContract extends EventCallbackContract {
+interface ContractHttpEventCallback extends ContractEventCallback {
 
     /**
      * @param Application $application

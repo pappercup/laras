@@ -9,7 +9,7 @@
 namespace Pappercup\Core;
 
 
-class MemoryBridge
+class BridgeMemory implements ContractSwooleMemory
 {
 
     public static function createSwooleMemory($memory_config)

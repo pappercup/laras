@@ -2,31 +2,56 @@
 /**
  * Created by PhpStorm.
  * User: pappercup
- * Date: 2018/9/18
- * Time: 15:11
+ * Date: 2018/9/29
+ * Time: 16:19
  */
 
 namespace Pappercup\Core;
 
-use Illuminate\Support\Facades\Config;
-use Pappercup\Event\WebSocketEventCallback;
-use Pappercup\Event\WebSocketEventCallbackContract;
-use Swoole\WebSocket\Server;
+use Swoole\Server;
 use Pappercup\Http\Request;
+use Illuminate\Support\Facades\Config;
+use Swoole\Http\Server as HttpServer;
+use Pappercup\Event\EventCallbackHttp;
+use Pappercup\Event\EventCallbackWebSocket;
+use Swoole\WebSocket\Server as WebSocketServer;
+use Pappercup\Event\ContractHttpEventCallback;
+use Pappercup\Event\ContractWebSocketEventCallback;
 
-class WebSocketBridge
+class BridgeServer
 {
+    protected $app = null;
+    protected $server = null;
+    protected $memory = null;
+    protected $extraEventCallback = null;
 
-    private $app = null;
-    private $server = null;
-    private $memory = null;
-    private $extraEventCallback = null;
+    protected $server_type = null;
+    protected $server_map = [
+        HttpServer::class => [
+            'callback_contract' => ContractHttpEventCallback::class,
+            'callback' => EventCallbackHttp::class,
+            'server' => 'http',
+            'server_contract' => ContractSwooleHttp::class,
+        ],
+        WebSocketServer::class => [
+            'callback_contract' => ContractWebSocketEventCallback::class,
+            'callback' => EventCallbackWebSocket::class,
+            'server' => 'websocket',
+            'server_contract' => ContractSwooleWebSocket::class,
+        ],
+    ];
 
     public function __construct(Server $server, array $memory)
     {
+        $this->checkServerType($server);
         $this->server = $server;
         $this->memory = $memory;
         $this->extraEventCallback = $this->createApplication()->findExtraEventCallback();
+    }
+
+    private function checkServerType($server)
+    {
+        $this->server_type = $this->server_map[get_class($server)];
     }
 
     /**
@@ -36,12 +61,12 @@ class WebSocketBridge
      * @author pappercup
      * @date 2018/9/18 15:53
      */
-    private function createApplication()
+    protected function createApplication()
     {
         // create laravel app
         $this->app = require base_path() . '/bootstrap/app.php';
         // bind swoole http server
-        $this->bindSwooleWebSocket();
+        $this->bindSwooleHttp();
         $this->bindSwooleMemory();
         return $this;
     }
@@ -53,14 +78,14 @@ class WebSocketBridge
      * @author pappercup
      * @date 2018/9/18 15:53
      */
-    private function findExtraEventCallback()
+    protected function findExtraEventCallback()
     {
-        $event_callback = Config::get('swoole.webSocket.event_callback');
+        $event_callback = Config::get('swoole.' . $this->server_type['server'] . '.event_callback');
 
-        if (app($event_callback) instanceof WebSocketEventCallbackContract) {
+        if (app($event_callback) instanceof  $this->server_type['callback_contract']) {
             return $event_callback;
         }else {
-            return WebSocketEventCallback::class;
+            return $this->server_type['callback'];
         }
     }
 
@@ -93,19 +118,20 @@ class WebSocketBridge
 
     }
 
+
     /**
      * @author pappercup
      * @date 2018/9/18 17:32
      */
-    private function bindSwooleMemory()
+    protected function bindSwooleMemory()
     {
         // 注册 swoole http server
-        $this->app->singleton(SwooleMemoryContract::class, function ($app) {
+        $this->app->singleton(ContractSwooleMemory::class, function ($app) {
             return $this->memory;
         });
         // 绑定别名
         if (!$this->app->bound('swoole.memory')) {
-            $this->app->alias(SwooleMemoryContract::class, 'swoole.memory');
+            $this->app->alias(ContractSwooleMemory::class, 'swoole.memory');
         }
     }
 
@@ -113,15 +139,15 @@ class WebSocketBridge
      * @author pappercup
      * @date 2018/9/18 15:19
      */
-    private function bindSwooleWebSocket()
+    protected function bindSwooleHttp()
     {
         // 注册 swoole http server
-        $this->app->singleton(SwooleWebSocketContract::class, function ($app) {
+        $this->app->singleton($this->server_type['server_contract'], function ($app) {
             return $this->server;
         });
         // 绑定别名
-        if (!$this->app->bound('swoole.webSocket')) {
-            $this->app->alias(SwooleWebSocketContract::class, 'swoole.webSocket');
+        if (!$this->app->bound('swoole.http')) {
+            $this->app->alias($this->server_type['server_contract'], 'swoole.'. $this->server_type['server']);
         }
     }
 
@@ -132,7 +158,7 @@ class WebSocketBridge
      * @author pappercup
      * @date 2018/9/18 15:19
      */
-    private function responseMapper($response, $swooleResponse)
+    protected function responseMapper($response, $swooleResponse)
     {
         foreach ($response->headers as $key => $value) {
             $swooleResponse->header($key, $value[0]);
@@ -145,8 +171,6 @@ class WebSocketBridge
         }
         return $swooleResponse;
     }
-
-
 
 
 }

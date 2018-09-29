@@ -32,7 +32,8 @@
                 "Pappercup\\Provider\\LarasServiceProvider"
             ],
             "aliases": {
-                "SwooleHttp": "Pappercup\\Support\\SwooleHttpFacade"
+                "SwooleHttp": "Pappercup\\Support\\SwooleHttpFacade",
+                "SwooleWebSocket": "Pappercup\\Support\\SwooleWebSocketFacade"
             }
         }
     }

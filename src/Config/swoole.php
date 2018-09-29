@@ -57,8 +57,8 @@ return [
         ],
     ],
 
-    'webSocket' => [
-        'pid_file_path' => storage_path('swoole/web_socket'),
+    'websocket' => [
+        'pid_file_path' => storage_path('swoole/websocket'),
         'host' => env('SWOOLE_HTTP_HOST', '0.0.0.0'),
         'port' => env('SWOOLE_HTTP_PORT', 7001),
         'options' => [

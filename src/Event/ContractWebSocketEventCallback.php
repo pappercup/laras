@@ -9,7 +9,7 @@
 namespace Pappercup\Event;
 
 
-interface WebSocketEventCallbackContract extends HttpEventCallbackContract {
+interface ContractWebSocketEventCallback extends ContractHttpEventCallback {
 
     /**
      * https://wiki.swoole.com/wiki/page/409.html
