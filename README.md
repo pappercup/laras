@@ -27,7 +27,7 @@ php artisan vendor:publish
 php artisan swoole:http start
 
 // websocket
-php artisan swoole:webSocket start
+php artisan swoole:websocket start
 ```
 *  TODO:
     
