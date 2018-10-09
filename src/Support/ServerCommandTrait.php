@@ -19,14 +19,18 @@ trait ServerCommandTrait {
 
     protected $actions = [ 'start', 'stop', 'reload', 'restart' ];
 
-    public function __construct()
+    public function init()
     {
-        parent::__construct();
+        $this->check();
+        $this->config();
+    }
+
+    public function config()
+    {
         if (!Configure::config($this->server_type)) {
             $this->print('configure failure', 'error');
             exit();
         }
-
     }
 
     public function check()
@@ -142,6 +146,7 @@ trait ServerCommandTrait {
         $action = $this->analysisArgument();
         $this->$action();
     }
+
 
 
 }

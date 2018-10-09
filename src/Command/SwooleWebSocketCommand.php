@@ -32,8 +32,9 @@ class SwooleWebSocketCommand extends Command
      */
     public function handle()
     {
-        $this->check();
+        $this->init();
         $this->act();
     }
+
 
 }

@@ -23,10 +23,7 @@ class SwooleHttpCommand extends Command
      *
      * @var string
      */
-    protected $description = 'bridge swoole and laravel; 
-                        swoole:http start|stop|reload|restart; 
-                        tips: default is start; 
-                        ex: swoole:http start: swoole:http stop: swoole:http;';
+    protected $description = 'bridge swoole and laravel;';
 
     /**
      * Execute the console command.
@@ -35,8 +32,9 @@ class SwooleHttpCommand extends Command
      */
     public function handle()
     {
-        $this->check();
+        $this->init();
         $this->act();
     }
+
 
 }

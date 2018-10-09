@@ -34,6 +34,7 @@
             "aliases": {
                 "SwooleHttp": "Pappercup\\Support\\SwooleHttpFacade",
                 "SwooleWebSocket": "Pappercup\\Support\\SwooleWebSocketFacade"
+                "SwooleMemoryFacade": "Pappercup\\Support\\SwooleMemoryFacade"
             }
         }
     }
