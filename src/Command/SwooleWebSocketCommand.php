@@ -23,7 +23,7 @@ class SwooleWebSocketCommand extends Command
      *
      * @var string
      */
-    protected $description = 'bridge swoole and laravel;';
+    protected $description = 'bridge swoole and laravel: start|stop|reload|restart';
 
     /**
      * Execute the console command.
