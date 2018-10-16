@@ -23,6 +23,8 @@
             "Pappercup\\Core\\": "src/Core/",
             "Pappercup\\Http\\": "src/Http/",
             "Pappercup\\Provider\\": "src/Provider/",
+            "Pappercup\\Pool\\": "src/Pool/",
+            "Pappercup\\Database\\": "src/Database/",
             "Pappercup\\Event\\": "src/Event/"
         }
     },
