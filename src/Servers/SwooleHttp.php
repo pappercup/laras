@@ -43,6 +43,7 @@ class SwooleHttp implements ContractSwooleHttp
                 $this->bindDefaultHttpEventCallback();
             }
         }
+        $this->http->config = config();
         $this->bridge = new BridgeHttp($this->http, $this->memory);
         return $this;
     }

@@ -16,11 +16,11 @@ use Pappercup\Contracts\Server\ContractSwooleHttp;
 use Pappercup\Contracts\Server\ContractSwooleWebSocket;
 use Pappercup\Events\EventCallbackHttp;
 use Pappercup\Events\EventCallbackWebSocket;
+use Pappercup\Servers\Expends\Http;
+use Pappercup\Servers\Expends\WebSocket;
 use Swoole\Server;
 use Pappercup\Http\Request;
 use Illuminate\Support\Facades\Config;
-use Swoole\Http\Server as HttpServer;
-use Swoole\WebSocket\Server as WebSocketServer;
 
 class BridgeServer
 {
@@ -33,13 +33,13 @@ class BridgeServer
 
     protected $server_type = null;
     protected $server_map = [
-        HttpServer::class => [
+        Http::class => [
             'callback_contract' => ContractHttpEventCallback::class,
             'callback' => EventCallbackHttp::class,
             'server' => 'http',
             'server_contract' => ContractSwooleHttp::class,
         ],
-        WebSocketServer::class => [
+        WebSocket::class => [
             'callback_contract' => ContractWebSocketEventCallback::class,
             'callback' => EventCallbackWebSocket::class,
             'server' => 'websocket',
@@ -74,7 +74,6 @@ class BridgeServer
         // bind swoole http server
         $this->bindSwooleHttp();
         $this->bindSwooleMemory();
-        $this->bindPoolMysql();
         return $this;
     }
 
@@ -104,6 +103,8 @@ class BridgeServer
      */
     public function bootstrapLaravel($swooleRequest, $swooleResponse)
     {
+        $this->bindPoolMysql();
+
         //  custom event callback
         $this->extraEventCallback::beforeRunLaravel($this->app);
 

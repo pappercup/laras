@@ -51,7 +51,7 @@ class EventCallbackHttp implements ContractHttpEventCallback
      */
     public static function WorkerStart(Server $server, int $worker_id)
     {
-        $server->pool[$worker_id] = BridgePool::createPoolMysql();
+        $server->setAttribute('pool', [ $worker_id => BridgePool::createPoolMysql($server) ]);
         // TODO: Implement WorkerStart() method.
     }
 
@@ -243,6 +243,7 @@ class EventCallbackHttp implements ContractHttpEventCallback
         // TODO: Implement beforeRunLaravel() method.
         dump('before run laravel');
         dump(app()['pool.mysql']->count());
+        dump('===============' . app()['swoole.http']->worker_id);
     }
 
     /**

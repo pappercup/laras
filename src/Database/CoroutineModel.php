@@ -15,7 +15,8 @@ class CoroutineModel extends Model
      */
     public static function resolveConnection($connection = null)
     {
-        return app()['pool.mysql']->get();
+        $server = app()['swoole.http'];
+        return app()['pool.mysql']->get($server);
 //        return static::$resolver->connection($connection);
     }
 

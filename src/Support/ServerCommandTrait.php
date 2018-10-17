@@ -5,8 +5,8 @@ namespace Pappercup\Support;
 use Illuminate\Support\Facades\Config;
 use Pappercup\Config\Configure;
 use Pappercup\Config\Environment;
-use Pappercup\Core\SwooleHttp;
-use Pappercup\Core\SwooleWebSocket;
+use Pappercup\Servers\SwooleHttp;
+use Pappercup\Servers\SwooleWebSocket;
 
 trait ServerCommandTrait {
 

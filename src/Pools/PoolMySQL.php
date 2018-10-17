@@ -9,20 +9,14 @@ use Pappercup\Database\ConnectionMySQL;
 class PoolMySQL extends Pool implements ContractPoolMySQL
 {
 
-    public static function generator(): Object
+    public static function generator($server): Object
     {
-        $config = self::config();
+        $config = $server->config['database']['connections']['mysql'];
 
         $connection = (new MySqlConnector())->connect($config);
 
         return (new ConnectionMySQL($connection, $config['database'], $config['prefix'], $config));
     }
 
-    protected static function config()
-    {
-        $config = app()['config']['database.connections']['mysql'];
-
-        return $config;
-    }
 
 }

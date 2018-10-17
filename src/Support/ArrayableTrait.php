@@ -8,12 +8,12 @@ trait ArrayableTrait {
     private $attributes = [];
 
 
-    private function getAttribute($name)
+    public function getAttribute($name)
     {
         return $this->attributes[$name] ?? $this->$name ?? null;
     }
 
-    private function setAttribute($name, $value)
+    public function setAttribute($name, $value)
     {
         $this->attributes[$name] = $value;
     }

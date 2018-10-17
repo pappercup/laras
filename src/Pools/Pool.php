@@ -13,7 +13,7 @@ abstract class Pool implements ContractPool
 
     private function __construct(){}
 
-    abstract static function generator() : Object;
+    abstract static function generator($server) : Object;
 
     public static function instance()
     {
@@ -27,9 +27,6 @@ abstract class Pool implements ContractPool
     {
         if (empty(self::$pool)) {
             self::$pool = new \SplQueue();
-            for ($i = 0; $i < 5; $i++) {
-                self::_put($this->generator());
-            }
         }
         return $this;
     }
@@ -48,13 +45,13 @@ abstract class Pool implements ContractPool
         }
     }
 
-    public function get()
+    public function get($server)
     {
         if (self::$available && !self::$pool->isEmpty()) {
             return self::$pool->dequeue();
         }
 
-        return $this->generator();
+        return $this->generator($server);
     }
 
     public function __destruct()
