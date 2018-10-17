@@ -17,15 +17,17 @@
     },
     "autoload": {
         "psr-4": {
-            "Pappercup\\Command\\": "src/Command/",
+            "Pappercup\\Bridges\\": "src/Bridges/",
+            "Pappercup\\Commands\\": "src/Commands/",
             "Pappercup\\Config\\": "src/Config/",
+            "Pappercup\\Contracts\\": "src/Contracts/",
             "Pappercup\\Support\\": "src/Support/",
-            "Pappercup\\Core\\": "src/Core/",
+            "Pappercup\\Servers\\": "src/Servers/",
             "Pappercup\\Http\\": "src/Http/",
             "Pappercup\\Provider\\": "src/Provider/",
-            "Pappercup\\Pool\\": "src/Pool/",
+            "Pappercup\\Pools\\": "src/Pools/",
             "Pappercup\\Database\\": "src/Database/",
-            "Pappercup\\Event\\": "src/Event/"
+            "Pappercup\\Events\\": "src/Events/"
         }
     },
     "extra": {

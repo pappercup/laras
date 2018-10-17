@@ -3,7 +3,6 @@
 namespace Pappercup\Database;
 
 use Illuminate\Database\MySqlConnection;
-use Pappercup\Pool\PoolMySQL;
 
 class ConnectionMySQL extends MySqlConnection
 {
@@ -12,7 +11,8 @@ class ConnectionMySQL extends MySqlConnection
     {
         $result = parent::run($query, $bindings, $callback);
         // 回收 数据库连接
-        PoolMySQL::put($this->getPdo());
+        dump('---------' . app()['pool.mysql']->count() . '-------------');
+        app()['pool.mysql']->put($this);
 
         return $result;
     }

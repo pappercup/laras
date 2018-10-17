@@ -8,9 +8,10 @@
 
 namespace Pappercup\Provider;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
-use Pappercup\Command\SwooleHttpCommand;
-use Pappercup\Command\SwooleWebSocketCommand;
+use Pappercup\Commands\SwooleHttpCommand;
+use Pappercup\Commands\SwooleWebSocketCommand;
 
 class LarasServiceProvider extends ServiceProvider
 {
@@ -38,6 +39,16 @@ class LarasServiceProvider extends ServiceProvider
             __DIR__.'/../Config/swoole.php' => config_path('swoole.php'),
         ]);
 
+        DB::extend('coroutine.mysql', function ($config, $name) {
+            return $this->makeCoroutineMysqlConnection($config, $name);
+        });
+
+    }
+
+
+    public function makeCoroutineMysqlConnection($config, $name)
+    {
+        return app()['pool.mysql']->get();
     }
 
 

@@ -3,7 +3,6 @@
 namespace Pappercup\Database;
 
 use Illuminate\Database\Eloquent\Model;
-use Pappercup\Pool\PoolMySQL;
 
 class CoroutineModel extends Model
 {
@@ -16,7 +15,7 @@ class CoroutineModel extends Model
      */
     public static function resolveConnection($connection = null)
     {
-        return PoolMySQL::get();
+        return app()['pool.mysql']->get();
 //        return static::$resolver->connection($connection);
     }
 
