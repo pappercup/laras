@@ -11,7 +11,7 @@ class PoolMySQL extends Pool implements ContractPoolMySQL
 
     public function generator($server): Object
     {
-        $config = $server->config['database']['connections']['mysql'];
+        $config = $server->config['database']['connections']['coroutine.mysql'];
 
         $connection = (new MySqlConnector())->connect($config);
 

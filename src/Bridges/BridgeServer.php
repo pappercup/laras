@@ -52,7 +52,7 @@ class BridgeServer
         $this->checkServerType($server);
         $this->server = $server;
         $this->memory = $memory;
-        $this->extraEventCallback = $this->createApplication()->findExtraEventCallback();
+        $this->extraEventCallback = $this->findExtraEventCallback();
     }
 
     private function checkServerType($server)
@@ -67,7 +67,7 @@ class BridgeServer
      * @author pappercup
      * @date 2018/9/18 15:53
      */
-    protected function createApplication()
+    public function createApplication()
     {
         // create laravel app
         $this->app = require base_path() . '/bootstrap/app.php';

@@ -108,7 +108,7 @@ class SwooleHttp implements ContractSwooleHttp
     private function onRequest()
     {
         $this->http->on('Request', function (\Swoole\Http\Request $request, \Swoole\Http\Response $response) {
-            $this->bridge->bootstrapLaravel($request, $response);
+            $this->bridge->createApplication()->bootstrapLaravel($request, $response);
         });
         return $this;
     }
