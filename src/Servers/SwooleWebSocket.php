@@ -44,6 +44,7 @@ class SwooleWebSocket  implements ContractSwooleWebSocket
                 $this->bindDefaultWebSocketEventCallback();
             }
         }
+        $this->webSocket->config = config();
         $this->bridge = new BridgeWebSocket($this->webSocket, $this->memory);
         return $this;
     }
@@ -108,7 +109,7 @@ class SwooleWebSocket  implements ContractSwooleWebSocket
     private function onRequest()
     {
         $this->webSocket->on('Request', function (\Swoole\Http\Request $request, \Swoole\Http\Response $response) {
-            $this->bridge->bootstrapLaravel($request, $response);
+            $this->bridge->createApplication()->bootstrapLaravel($request, $response);
         });
         return $this;
     }

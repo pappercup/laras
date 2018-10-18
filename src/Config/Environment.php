@@ -34,7 +34,7 @@ class Environment
      */
     public static function checkSwooleVersion()
     {
-        return extension_loaded('swoole') ? version_compare(phpversion(), self::SWOOLE_VERSION, '>=') ? true: false: false;
+        return extension_loaded('swoole') ? version_compare(SWOOLE_VERSION, self::SWOOLE_VERSION, '>=') ? true: false: false;
     }
 
     /**

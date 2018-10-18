@@ -3,6 +3,7 @@
 namespace Pappercup\Events;
 
 use Illuminate\Foundation\Application;
+use Pappercup\Bridges\BridgePool;
 use Pappercup\Config\Configure;
 use Pappercup\Contracts\Event\ContractWebSocketEventCallback;
 use Swoole\Server;
@@ -51,6 +52,7 @@ class EventCallbackWebSocket implements ContractWebSocketEventCallback
     public static function WorkerStart(Server $server, int $worker_id)
     {
         // TODO: Implement WorkerStart() method.
+        $server->setAttribute('pool', [ $worker_id => BridgePool::createPoolMysql($server) ]);
     }
 
     /**
