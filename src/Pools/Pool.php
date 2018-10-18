@@ -7,48 +7,41 @@ use Pappercup\Contracts\Pool\ContractPool;
 
 abstract class Pool implements ContractPool
 {
-    private static $instance = null;
-    private static $available = true;
-    private static $pool = null;
+    private $available = true;
+    private $pool = null;
 
-    private function __construct(){}
-
-    abstract static function generator($server) : Object;
-
-    public static function instance()
+    public function __construct()
     {
-        if (empty(self::$instance)) {
-            return (new static)->initPool();
-        }
-        return self::$instance;
+        $this->initPool();
     }
 
-    protected function initPool()
+    abstract function generator($server) : Object;
+
+    private function initPool()
     {
-        if (empty(self::$pool)) {
-            self::$pool = new \SplQueue();
+        if (empty($this->pool)) {
+            $this->pool = new \SplQueue();
         }
-        return $this;
     }
 
-    public static function _put(Object $object)
+    public function _put(Object $object)
     {
-        if (self::$available) {
-            (self::$pool)->enqueue($object);
+        if ($this->available) {
+            ($this->pool)->enqueue($object);
         }
     }
 
     public function put(Object $object)
     {
-        if (self::$available) {
-            (self::$pool)->enqueue($object);
+        if ($this->available) {
+            ($this->pool)->enqueue($object);
         }
     }
 
     public function get($server)
     {
-        if (self::$available && !self::$pool->isEmpty()) {
-            return self::$pool->dequeue();
+        if ($this->available && !$this->pool->isEmpty()) {
+            return $this->pool->dequeue();
         }
 
         return $this->generator($server);
@@ -56,9 +49,9 @@ abstract class Pool implements ContractPool
 
     public function __destruct()
     {
-        self::$available = false;
-        while (!self::$pool->isEmpty()) {
-            self::$pool->dequeue();
+        $this->available = false;
+        while (!$this->pool->isEmpty()) {
+            $this->pool->dequeue();
         }
     }
 
@@ -69,17 +62,13 @@ abstract class Pool implements ContractPool
 
     public function pool()
     {
-        return self::$pool;
+        return $this->pool;
     }
 
     public function count()
     {
-        return self::$pool->count();
+        return $this->pool->count();
     }
 
-    public static function __callStatic($method, $parameters)
-    {
-        return call_user_func_array([self::class, $method], $parameters);
-    }
 
 }

@@ -17,10 +17,9 @@ class BridgePool implements ContractPoolBridge
 
     public static function createPoolMysql($server)
     {
-        $pool = [];
-        $pool = PoolMySQL::instance();
+        $pool = new PoolMySQL();
         for ($i = 0; $i < 5; $i++) {
-            $pool->put($pool::generator($server));
+            $pool->put($pool->generator($server));
         }
         return $pool;
     }
