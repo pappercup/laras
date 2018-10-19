@@ -31,5 +31,5 @@ php artisan swoole:websocket start
 ```
 *  TODO:
     
-    * pool
+    * pool(mysql, redis?, ...)
     * ...
