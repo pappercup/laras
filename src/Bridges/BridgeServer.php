@@ -53,11 +53,35 @@ class BridgeServer
         $this->server = $server;
         $this->memory = $memory;
         $this->extraEventCallback = $this->findExtraEventCallback();
+
     }
 
     private function checkServerType($server)
     {
         $this->server_type = $this->server_map[get_class($server)];
+    }
+
+    private function createApplication()
+    {
+        $app = new \Illuminate\Foundation\Application(
+            realpath(base_path())
+        );
+
+        $app->singleton(
+            \Illuminate\Contracts\Http\Kernel::class,
+            \App\Http\Kernel::class
+        );
+
+        $app->singleton(
+            \Illuminate\Contracts\Console\Kernel::class,
+            \App\Console\Kernel::class
+        );
+
+        $app->singleton(
+            \Illuminate\Contracts\Debug\ExceptionHandler::class,
+            \App\Exceptions\Handler::class
+        );
+        $this->app =  $app;
     }
 
     /**
@@ -67,10 +91,10 @@ class BridgeServer
      * @author pappercup
      * @date 2018/9/18 15:53
      */
-    public function createApplication()
+    public function bootApplication()
     {
         // create laravel app
-        $this->app = require base_path() . '/bootstrap/app.php';
+        $this->createApplication();
         // bind swoole http server
         $this->bindSwooleHttp();
         $this->bindSwooleMemory();
@@ -154,8 +178,8 @@ class BridgeServer
             return $this->server;
         });
         // 绑定别名
-        if (!$this->app->bound('swoole.http')) {
-            $this->app->alias($this->server_type['server_contract'], 'swoole.'. $this->server_type['server']);
+        if (!$this->app->bound('swoole.server')) {
+            $this->app->alias($this->server_type['server_contract'], 'swoole.server');
         }
     }
 

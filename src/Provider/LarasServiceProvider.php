@@ -48,7 +48,7 @@ class LarasServiceProvider extends ServiceProvider
 
     public function makeCoroutineMysqlConnection($config, $name)
     {
-        return app()['pool.mysql']->get(app()['swoole.http']);
+        return app()['pool.mysql']->get(app()['swoole.server']);
     }
 
 

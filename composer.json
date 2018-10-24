@@ -27,6 +27,7 @@
             "Pappercup\\Provider\\": "src/Provider/",
             "Pappercup\\Pools\\": "src/Pools/",
             "Pappercup\\Database\\": "src/Database/",
+            "Pappercup\\Exceptions\\": "src/Exceptions/",
             "Pappercup\\Events\\": "src/Events/"
         }
     },

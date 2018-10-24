@@ -17,9 +17,12 @@ class BridgePool implements ContractPoolBridge
 
     public static function createPoolMysql($server)
     {
-        $pool = new PoolMySQL();
-        for ($i = 0; $i < 5; $i++) {
-            $pool->put($pool->generator($server));
+        $config = (config('swoole.pool'));
+        $pool = new PoolMySQL($server, $config);
+        $length = isset($config['mysql']['size']) ? $config['mysql']['size'] : 5;
+
+        for ($i = 0; $i < $length; $i++) {
+            $pool->put($pool->generator());
         }
         return $pool;
     }

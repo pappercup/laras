@@ -10,13 +10,8 @@ class ConnectionMySQL extends MySqlConnection
 
     protected function run($query, $bindings, \Closure $callback)
     {
-//        if (class_exists('Swoole\\Runtime')){
-//            \Swoole\Runtime::enableCoroutine(true, SWOOLE_HOOK_ALL);
-//            $result = parent::run($query, $bindings, $callback);
-//            \Swoole\Runtime::enableCoroutine(false);
-//        }else {
-            $result = parent::run($query, $bindings, $callback);
-//        }
+
+        $result = parent::run($query, $bindings, $callback);
 
         // 回收 数据库连接
         app()['pool.mysql']->put($this);

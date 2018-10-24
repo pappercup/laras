@@ -66,6 +66,8 @@ class EventCallbackHttp implements ContractHttpEventCallback
      */
     public static function WorkerStop(Server $server, int $worker_id)
     {
+        // 释放 池资源
+        !isset($server['pool'][$worker_id]) ?: $server['pool'][$worker_id]->destruct();
         // TODO: Implement WorkerStop() method.
     }
 
@@ -243,7 +245,7 @@ class EventCallbackHttp implements ContractHttpEventCallback
         // TODO: Implement beforeRunLaravel() method.
         dump('before run laravel');
         dump(app()['pool.mysql']->count());
-        dump('===============' . app()['swoole.http']->worker_id);
+        dump('===============' . app()['swoole.server']->worker_id);
     }
 
     /**

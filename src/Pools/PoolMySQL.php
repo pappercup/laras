@@ -9,9 +9,9 @@ use Pappercup\Database\ConnectionMySQL;
 class PoolMySQL extends Pool implements ContractPoolMySQL
 {
 
-    public function generator($server): Object
+    public function generator()
     {
-        $config = $server->config['database']['connections']['coroutine.mysql'];
+        $config = $this->server->config['database']['connections']['coroutine.mysql'];
 
         $connection = (new MySqlConnector())->connect($config);
 

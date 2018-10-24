@@ -12,32 +12,10 @@ class Request extends \Illuminate\Http\Request
     public static function captureSwooleRequest(\swoole_http_request $swooleRequest)
     {
         self::$swooleRequest = $swooleRequest;
-        static::enableHttpMethodParameterOverride();
+        parent::enableHttpMethodParameterOverride();
 
-        return static::createFromSwooleBase(self::createFromSwooleGlobals());
+        return parent::createFromBase(self::createFromSwooleGlobals());
     }
-
-    public static function createFromSwooleBase(SymfonyRequest $request)
-    {
-
-        if ($request instanceof static) {
-            return $request;
-        }
-
-        $content = $request->content;
-
-        $request = (new static)->duplicate(
-            $request->query->all(), $request->request->all(), $request->attributes->all(),
-            $request->cookies->all(), $request->files->all(), $request->server->all()
-        );
-
-        $request->content = $content;
-
-        $request->request = $request->getInputSource();
-
-        return $request;
-    }
-
 
     /**
      * Creates a new request with values from PHP's super globals.
@@ -67,7 +45,7 @@ class Request extends \Illuminate\Http\Request
             $headers['HTTP_' . str_replace('-', '_', strtoupper($key))] = $value;
         }
 
-        $request = self::createRequestFromFactory(
+        $request = static::createRequestFromFactory(
             self::$swooleRequest->get ? self::$swooleRequest->get : [],
             self::$swooleRequest->post ? self::$swooleRequest->post : [],
             array(),
@@ -85,10 +63,11 @@ class Request extends \Illuminate\Http\Request
         return $request;
     }
 
+
     private static function createRequestFromFactory(array $query = array(), array $request = array(), array $attributes = array(), array $cookies = array(), array $files = array(), array $server = array(), $content = null)
     {
         if (self::$requestFactory) {
-            $request = call_user_func(self::$requestFactory, $query, $request, $attributes, $cookies, $files, $server, $content);
+            $request = \call_user_func(self::$requestFactory, $query, $request, $attributes, $cookies, $files, $server, $content);
 
             if (!$request instanceof self) {
                 throw new \LogicException('The Request factory must return an instance of Symfony\Component\HttpFoundation\Request.');
@@ -97,6 +76,7 @@ class Request extends \Illuminate\Http\Request
             return $request;
         }
 
-        return new static($query, $request, $attributes, $cookies, $files, $server, $content);
+        return new \Symfony\Component\HttpFoundation\Request($query, $request, $attributes, $cookies, $files, $server, $content);
     }
+
 }

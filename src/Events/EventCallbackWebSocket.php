@@ -52,6 +52,7 @@ class EventCallbackWebSocket implements ContractWebSocketEventCallback
     public static function WorkerStart(Server $server, int $worker_id)
     {
         // TODO: Implement WorkerStart() method.
+        require base_path().'/vendor/autoload.php';
         $server->setAttribute('pool', [ $worker_id => BridgePool::createPoolMysql($server) ]);
     }
 
@@ -83,6 +84,7 @@ class EventCallbackWebSocket implements ContractWebSocketEventCallback
     public static function WorkerExit(Server $server, int $worker_id)
     {
         // TODO: Implement WorkerExit() method.
+        !isset($server['pool'][$worker_id]) ?: $server['pool'][$worker_id]->destruct();
     }
 
     /**
